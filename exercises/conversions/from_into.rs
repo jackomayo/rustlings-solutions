@@ -18,7 +18,6 @@ impl Default for Person {
     }
 }
 
-// I AM NOT DONE
 // Your task is to complete this implementation
 // in order for the line `let p = Person::from("Mark,20")` to compile
 // Please note that you'll need to parse the age component into a `usize`
@@ -29,12 +28,23 @@ impl Default for Person {
 // 1. If the length of the provided string is 0, then return the default of Person
 // 2. Split the given string on the commas present in it
 // 3. Extract the first element from the split operation and use it as the name
-// 4. If the name is empty, then return the default of Person
-// 5. Extract the other element from the split operation and parse it into a `usize` as the age
+// 4. Extract the other element from the split operation and parse it into a `usize` as the age
 // If while parsing the age, something goes wrong, then return the default of Person
-// Otherwise, then return an instantiated Person object with the results
+// Otherwise, then return an instantiated Person onject with the results
 impl From<&str> for Person {
     fn from(s: &str) -> Person {
+        if s.len() == 0 {
+            Person::default()
+        }
+        else{
+            let split: Vec<&str> = s.split(',').collect();
+            let name: String = split[0].to_string();
+            let age = split[1].parse::<usize>();
+            match age {
+                Ok(_) => Person{ name, age:age.unwrap()},
+                Err(_) => Person::default()
+            }
+        }
     }
 }
 
@@ -75,41 +85,6 @@ mod tests {
     fn test_bad_age() {
         // Test that "Mark.twenty" will return the default person due to an error in parsing age
         let p = Person::from("Mark,twenty");
-        assert_eq!(p.name, "John");
-        assert_eq!(p.age, 30);
-    }
-
-    #[test]
-    fn test_missing_comma_and_age() {
-        let p: Person = Person::from("Mark");
-        assert_eq!(p.name, "John");
-        assert_eq!(p.age, 30);
-    }
-
-    #[test]
-    fn test_missing_age() {
-        let p: Person = Person::from("Mark,");
-        assert_eq!(p.name, "John");
-        assert_eq!(p.age, 30);
-    }
-
-    #[test]
-    fn test_missing_name() {
-        let p: Person = Person::from(",1");
-        assert_eq!(p.name, "John");
-        assert_eq!(p.age, 30);
-    }
-
-    #[test]
-    fn test_missing_name_and_age() {
-        let p: Person = Person::from(",");
-        assert_eq!(p.name, "John");
-        assert_eq!(p.age, 30);
-    }
-
-    #[test]
-    fn test_missing_name_and_invalid_age() {
-        let p: Person = Person::from(",one");
         assert_eq!(p.name, "John");
         assert_eq!(p.age, 30);
     }
